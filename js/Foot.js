@@ -31,24 +31,44 @@ class Foot extends THREE.Object3D{
 			this.footShape.children[2].material.roughness = 0.7;
 
 			console.log("GEOM",this.chirality, this.footShape.children[2].geometry )
+
 			//this.mesh.geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( [], 3 ) );
 			var geometry = new THREE.Geometry().fromBufferGeometry( this.footShape.children[2].geometry );
+			console.log("FACES", geometry.faces.length);
+
 			//geometry = new THREE.BoxGeometry( 10, 10, 10, 2, 2, 2 );
-			var material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
+			var material = new THREE.MeshBasicMaterial( { 
+    			color: 0xf0f0f0, 
+    			shading: THREE.FlatShading,
+    			vertexColors: THREE.VertexColors // THREE.FaceColors;
+			});
 			var box = new THREE.Mesh( geometry, material );
-			//this.mesh.geometry = geometry;
 			geometry.computeFaceNormals();
 
+			for ( var i = 0; i < geometry.faces.length; i ++ ) {
+    			var face  = geometry.faces[ i ];
+    			//var colString = "rgb(" + Math.floor((face.normal.x+1)*128) + ", " + Math.floor((face.normal.y+1)*128) + ", " + Math.floor((face.normal.z+1)*128) + ")";
+    			var colString = "rgb(0, " + Math.floor((face.normal.y+1)*128) + ", " + Math.floor((face.normal.z+1)*128) + ")";
+    			//var colString = "rgb(" + Math.floor((face.normal.x+1)*128) + ", 0, 0)";
+    			//var colString = "rgb(0, 0, " + Math.floor((face.normal.z+1)*128) + ")";
+    			//var colString = "rgb(0, " + Math.floor((face.normal.y+1)*128) + ", 0)";
+    			console.log(colString)
+    			face.color = new THREE.Color(colString);
+			}
+
+			geometry.elementsNeedUpdate = true;
 			this.helper = new THREE.FaceNormalsHelper( box, 15, 0x000055, 1 );
 			//this.helper = new THREE.VertexNormalsHelper( this.mesh, 2, 0x00ff00, 1 );
-			//this.add(box);
+			this.mesh.add(box);
 			//box.position.y-=5;
 			//this.helper.position.y-=10
-			this.mesh.add(this.helper);
+			//this.mesh.add(this.helper);
 			this.helper.scale.x = this.helper.scale.y = this.helper.scale.z = 0.02;
 
 			if(chirality=="Right"){
-				this.mesh.rotation.x=1.5708;
+				//this.mesh.rotation.x=1.5708;
+				this.mesh.position.y+=4;
+				this.mesh.position.z-=3;
 			}
 			this.mesh.position.y += 2;
 			this.mesh.position.z += 1;

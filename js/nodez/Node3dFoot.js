@@ -9,6 +9,6 @@ class Node3dFoot extends Node3d {
 	}
 
 	enterFrame(){
-        if(this.foot.mesh){this.foot.rotation.y +=0.01;}
+        //if(this.foot.mesh){this.foot.rotation.y +=0.01;}
     }
 }

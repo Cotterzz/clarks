@@ -15,7 +15,7 @@ class ViewPort extends THREE.Object3D{
         if(global.depth){
             this.scene.background = new THREE.Color( 0x000000 );
         } else {
-            this.scene.background = new THREE.Color( 0x7799ff );
+            this.scene.background = new THREE.Color( 0xdddddd );
         }
     	
     	this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
