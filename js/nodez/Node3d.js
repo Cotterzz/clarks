@@ -76,6 +76,7 @@ class Node3d extends THREE.Object3D {
 	}
 
 	grown(){
+		console.log("GROWNNODE");
 		this.state = "grown";
 		this.label.scale.x = 1;
 		this.growth = 1;
@@ -95,6 +96,7 @@ class Node3d extends THREE.Object3D {
 	}
 
 	show(){
+
 		if(this.getOnScreen()){
 			this.visible = true;
 			if(this.isroot){

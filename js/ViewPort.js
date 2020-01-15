@@ -28,9 +28,9 @@ class ViewPort extends THREE.Object3D{
         this.plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({color: 0xff00ff}));
     	this.light = new THREE.AmbientLight(0xffffff, 2);
     	this.scene.add(this.light);
-        this.light1 = new THREE.PointLight(0xffffff, 200, 100, 2);
-        this.scene.add(this.light1);
-        this.light1.position.set(10, 20, 10);
+       // this.light1 = new THREE.PointLight(0xffffff, 200, 100, 2);
+       // this.scene.add(this.light1);
+       // this.light1.position.set(10, 20, 10);
         global.camera = this.camera;
         global.viewport = this;
         this.light2 = new THREE.DirectionalLight( 0xffffff, 1 );
