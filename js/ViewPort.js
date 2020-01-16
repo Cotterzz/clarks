@@ -9,13 +9,13 @@ class ViewPort extends THREE.Object3D{
         }
         this.renderer = new THREE.WebGLRenderer({canvas:document.getElementById("canvas3d"),antialias:true});
         this.renderer.physicallyCorrectLights = true;
-    	//this.renderer.shadowMap.enabled = true;
-        //this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; //THREE.BasicShadowMap; //// THREE.PCFShadowMap;
+    	this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; //THREE.BasicShadowMap; //// THREE.PCFShadowMap;
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         if(global.depth){
             this.scene.background = new THREE.Color( 0x000000 );
         } else {
-            this.scene.background = new THREE.Color( 0xdddddd );
+            this.scene.background = new THREE.Color( 0xffffdd );
         }
     	
     	this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
@@ -26,16 +26,23 @@ class ViewPort extends THREE.Object3D{
     	this.camera.lookAt(this.scene.position);
     	this.orbitcontrols = new THREE.OrbitControls(this.camera, document.getElementById("canvas3d"));
         this.plane = new THREE.Mesh(new THREE.PlaneBufferGeometry(500, 500, 8, 8), new THREE.MeshBasicMaterial({color: 0xff00ff}));
-    	this.light = new THREE.AmbientLight(0xffffff, 2);
+    	this.light = new THREE.AmbientLight(0x5555ff, 5);
     	this.scene.add(this.light);
-       // this.light1 = new THREE.PointLight(0xffffff, 200, 100, 2);
+       // this.light1 = new THREE.DirectionalLight( 0xffffff, 1 );
        // this.scene.add(this.light1);
        // this.light1.position.set(10, 20, 10);
         global.camera = this.camera;
         global.viewport = this;
-        this.light2 = new THREE.DirectionalLight( 0xffffff, 1 );
+        this.light2 = new THREE.PointLight(0xffffaa, 0.3, 0, 1);
+        this.light2.castShadow = true;
+        //Set up shadow properties for the light
+         this.light2.shadow.mapSize.width = 1024;  // default
+         this.light2.shadow.mapSize.height = 1024; // default
+         this.light2.shadow.camera.near = 0.5;       // default
+         this.light2.shadow.camera.far = 500      // default
+
         this.scene.add(this.light2);
-        this.light2.position.set(-10, 20, 10);
+        this.light2.position.set(20, 60, 0);
 
     	if(global.VR){
             this.renderer.vr.enabled = true;

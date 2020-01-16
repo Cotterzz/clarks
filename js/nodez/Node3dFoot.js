@@ -16,6 +16,8 @@ class Node3dFoot extends Node3d {
     	console.log("GROWNNODEFOOT");
     	super.grown();
     	this.foot = new Foot(this.footPath);
+    	this.foot.castShadow = true; //default is false
+		this.foot.receiveShadow = true; //default
 		super.add(this.foot);
     }
 }

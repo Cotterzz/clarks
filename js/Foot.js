@@ -3,6 +3,8 @@ class Foot extends THREE.Object3D{
 		super();
 		this.footmesh = new THREE.Mesh();
 		this.add(this.footmesh);
+		this.footmesh.castShadow = true; 
+		this.footmesh.receiveShadow = true;
 		this.footmesh.scale.x = this.footmesh.scale.y = this.footmesh.scale.z = 40;
      	//this.footmesh.rotation.x = global.ETA/2;
      	//this.footmesh.rotation.z = -global.ETA/2;
@@ -19,6 +21,8 @@ class Foot extends THREE.Object3D{
 		var geometry = new THREE.BoxGeometry( 40, 20, 40 );
 		var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
 		this.box = new THREE.Mesh( geometry, material );
+		this.box.castShadow = true; 
+		this.box.receiveShadow = true;
 		this.add( this.box );
 		this.loadPLYModel("testfeet/left2500.ply");
 		this.loadPLYModel("testfeet/right2500.ply");
@@ -36,7 +40,9 @@ class Foot extends THREE.Object3D{
 			//});
 			console.log(geometry);
 			geometry.computeFaceNormals();
-  			var loadedmesh = new THREE.Mesh(geometry, material)
+  			var loadedmesh = new THREE.Mesh(geometry, material);
+  			loadedmesh.castShadow = true; 
+			loadedmesh.receiveShadow = true;
   			this.footmesh.add(loadedmesh);
   			
      		
@@ -115,7 +121,7 @@ class Foot extends THREE.Object3D{
 	update(){
 		if(this.footmesh){
 			//this.footmesh.rotation.z += 0.01;
-			if(this.box.scale.y>0){
+			if(this.box.scale.y>0.1){
 				this.box.position.y -= 0.02;
 				this.box.scale.y -= 0.002;
 			}
