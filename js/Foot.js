@@ -1,7 +1,14 @@
 class Foot extends THREE.Object3D{
 	constructor(path){
 		super();
-		this.footmesh = null;
+		this.footmesh = new THREE.Mesh();
+		this.add(this.footmesh);
+		this.footmesh.scale.x = this.footmesh.scale.y = this.footmesh.scale.z = 40;
+     	//this.footmesh.rotation.x = global.ETA/2;
+     	//this.footmesh.rotation.z = -global.ETA/2;
+     	this.footmesh.position.x -=5;
+     	this.footmesh.position.z +=25;
+     	this.footmesh.position.y -=2;
 		this.modelPath = path;
 		this.loader = null;
 		this.box = null;
@@ -10,16 +17,17 @@ class Foot extends THREE.Object3D{
 
 	createBox(){
 		var geometry = new THREE.BoxGeometry( 40, 20, 40 );
-		var material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+		var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
 		this.box = new THREE.Mesh( geometry, material );
 		this.add( this.box );
-		this.loadPLYModel();
+		this.loadPLYModel("testfeet/left2500.ply");
+		this.loadPLYModel("testfeet/right2500.ply");
 	}
 
-	loadPLYModel(){
+	loadPLYModel(path){
 		console.log("LPLY");
 		this.loader = new THREE.PLYLoader();
-		this.loader.load( "testfeet/left2.ply",  ( geometry ) => {
+		this.loader.load( path,  ( geometry ) => {
 			var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
 			//var material = new THREE.MeshBasicMaterial( { 
     		//	color: 0xaaaaaa, 
@@ -28,13 +36,9 @@ class Foot extends THREE.Object3D{
 			//});
 			console.log(geometry);
 			geometry.computeFaceNormals();
-  			this.footmesh = new THREE.Mesh(geometry, material)
-  			this.add(this.footmesh);
-  			this.footmesh.scale.x = this.footmesh.scale.y = this.footmesh.scale.z = 40;
-     		this.footmesh.rotation.x = -global.ETA;
-     		this.footmesh.rotation.z = global.ETA;
-     		//this.footmesh.position.x +=4;
-     		this.footmesh.position.y +=2;
+  			var loadedmesh = new THREE.Mesh(geometry, material)
+  			this.footmesh.add(loadedmesh);
+  			
      		
 
 			//for ( var i = 0; i < geometry.faces.length(); i ++ ) {
@@ -110,10 +114,10 @@ class Foot extends THREE.Object3D{
 
 	update(){
 		if(this.footmesh){
-			this.footmesh.rotation.z += 0.01;
+			//this.footmesh.rotation.z += 0.01;
 			if(this.box.scale.y>0){
-				this.box.position.y -= 0.05;
-				this.box.scale.y -= 0.005;
+				this.box.position.y -= 0.02;
+				this.box.scale.y -= 0.002;
 			}
 			this.checkOrientation();
 		}
