@@ -1,51 +1,74 @@
 class Foot extends THREE.Object3D{
 	constructor(path){
 		super();
+		this.step = 0.1;
+		this.limit = global.TAU;
+		this.minimum = 0;
 		this.footmesh = new THREE.Mesh();
-		this.add(this.footmesh);
-		this.footmesh.castShadow = true; 
-		this.footmesh.receiveShadow = true;
-		this.footmesh.scale.x = this.footmesh.scale.y = this.footmesh.scale.z = 40;
-     	//this.footmesh.rotation.x = global.ETA/2;
-     	//this.footmesh.rotation.z = -global.ETA/2;
-     	this.footmesh.position.x -=5;
-     	this.footmesh.position.z +=25;
-     	this.footmesh.position.y -=2;
+		this.footmeshcontainer = new THREE.Mesh();
+		this.add(this.footmeshcontainer);
+		this.footmeshcontainer.add(this.footmesh);
+		//this.footmesh.castShadow = true; 
+		//this.footmesh.receiveShadow = true;
+		this.footmesh.scale.x = this.footmesh.scale.y = this.footmesh.scale.z = 1;
+     	
+     	//this.footmesh.rotation.z = -global.ETA/3.2;
+     	this.footmesh.rotation.x = global.ETA;
+     	this.footmesh.position.x =-50;
+     	//this.footmesh.position.z =40;
+     	this.footmesh.position.y =3;
+     	this.minimumWidth = null;
+     	this.associatedLength = null;
+     	this.associatedRotation = null;
 		this.modelPath = path;
 		this.loader = null;
 		this.box = null;
+		this.wirebox = null;
+		this.pointCloud = null;
 		this.createBox();
 	}
 
 	createBox(){
-		var geometry = new THREE.BoxGeometry( 40, 20, 40 );
-		var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
-		this.box = new THREE.Mesh( geometry, material );
-		this.box.castShadow = true; 
-		this.box.receiveShadow = true;
-		this.add( this.box );
-		this.loadPLYModel("testfeet/left2500.ply");
-		this.loadPLYModel("testfeet/right2500.ply");
+		//var geometry = new THREE.BoxGeometry( 40, 40, 40 );
+		//var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+		//this.box = new THREE.Mesh( geometry, material );
+		//this.box.castShadow = true; 
+		//this.box.receiveShadow = true;
+		//this.add( this.box );
+		//this.loadOBJModel("pointcloud/cloud.obj");
+		//this.loadPLYModel("testfeet/left2500.ply");
+		this.loadPointCloud();
 	}
 
+	loadPointCloud(){
+		this.pointCloud = new PointCloud();
+		this.pointCloud.init();
+		this.footmesh.add(this.pointCloud);
+	}
+	 
 	loadPLYModel(path){
 		console.log("LPLY");
 		this.loader = new THREE.PLYLoader();
 		this.loader.load( path,  ( geometry ) => {
+			console.log(geometry);
 			var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
 			//var material = new THREE.MeshBasicMaterial( { 
     		//	color: 0xaaaaaa, 
-    		//	flatShading: true,
+    		//	flatShading: tr
     		//	vertexColors: THREE.VertexColors // THREE.FaceColors;
 			//});
-			console.log(geometry);
+			
 			geometry.computeFaceNormals();
   			var loadedmesh = new THREE.Mesh(geometry, material);
   			loadedmesh.castShadow = true; 
 			loadedmesh.receiveShadow = true;
+  			//this.add(loadedmesh);
   			this.footmesh.add(loadedmesh);
-  			
-     		
+  			//this.getLimitsOf(geometry, loadedmesh)
+  			var gArray = geometry.attributes.position.array;
+     		this.pointCloud = new PointCloudGlobal(gArray.length, gArray, loadedmesh);
+			this.add(this.pointCloud);
+			this.pointCloud.init();
 
 			//for ( var i = 0; i < geometry.faces.length(); i ++ ) {
     		//	var face  = geometry.faces[ i ];
@@ -59,6 +82,62 @@ class Foot extends THREE.Object3D{
 			//}
 
   		});
+	}
+
+	getLimitsOf(geometry, object){
+		var gArray = geometry.attributes.position.array;
+		var currentLocalVector = new THREE.Vector3( gArray[0], gArray[1], gArray[2] );
+		var currentGlobalVector = object.localToWorld ( currentLocalVector );
+		var currentObjectVector = object.worldToLocal ( currentGlobalVector );
+
+		var xmax = currentObjectVector.x;
+		var xmin = currentObjectVector.x;
+		var ymax = currentObjectVector.y;
+		var ymin = currentObjectVector.y;
+		var zmax = currentObjectVector.z;
+		var zmin = currentObjectVector.z;
+
+		console.log("Length:", gArray.length);
+		for ( var i = 3; i < gArray.length; i +=3 ) {
+			currentLocalVector = new THREE.Vector3( gArray[i], gArray[i+1], gArray[i+2] );
+			currentGlobalVector = object.localToWorld ( currentLocalVector );
+			//currentGlobalVector = object.worldToLocal ( currentGlobalVector );
+			//console.log(currentGlobalVector.x, currentGlobalVector.y, currentGlobalVector.z)
+
+			if(currentGlobalVector.x>xmax){xmax=currentGlobalVector.x}
+				else if(currentGlobalVector.x<xmin){xmin=currentGlobalVector.x};
+			i++;
+			if(currentGlobalVector.y>ymax){ymax=currentGlobalVector.y}
+				else if(currentGlobalVector.y<ymin){ymin=currentGlobalVector.y};
+			i++;
+			if(currentGlobalVector.z>zmax){zmax=currentGlobalVector.z}
+				else if(currentGlobalVector.z<zmin){zmin=currentGlobalVector.z};
+		}
+		this.createWireBox();
+		this.setWireBox(xmin, xmax, ymin, ymax, zmin, zmax);
+	}
+
+	createWireBox(){
+		var geometry = new THREE.BoxGeometry( 10, 10, 10 );
+		var material = new THREE.MeshBasicMaterial({color: 0xaaaaaa, wireframe:true});
+		this.wirebox = new THREE.Mesh( geometry, material );
+		this.add( this.wirebox );
+	}
+
+	setWireBox(xp, xm, yp, ym, zp, zm){
+		xm*=2;
+		zm*=2;
+		//console.log("SWB", xp, xm, yp, ym, zp, zm)
+		this.wirebox.position.x = xp;
+		this.wirebox.position.y = yp;
+		this.wirebox.position.z = zp;
+		this.wirebox.scale.x = xm-xp;
+		this.wirebox.scale.y = ym-yp;
+		this.wirebox.scale.z = zm-zp;
+		this.wirebox.verticesNeedUpdate = true;
+		this.wirebox.updateMatrix(); 
+		this.wirebox.geometry.applyMatrix( this.wirebox.matrix );
+		this.wirebox.matrix.identity();
 	}
 
 	loadSTLModel(){
@@ -96,45 +175,79 @@ class Foot extends THREE.Object3D{
   		});
 	}
 
-	loadOBJModel(){
+	loadOBJModel(path){
 		this.loader = new THREE.OBJLoader();
-		this.loader.load( "models/" + this.modelPath + "/left.obj",  ( object ) => {
-     		this.footmesh = object;
-     		this.add(object);
-
-     		
-     		console.log("HERE",this.footmesh.children[0].geometry)
-     		this.footmesh.scale.x = this.footmesh.scale.y = this.footmesh.scale.z = 50;
-     		this.footmesh.rotation.x = -global.ETA;
-     		this.footmesh.rotation.z = global.ETA;
-     		this.footmesh.position.x +=4;
-     		this.footmesh.position.y +=2;
-     		this.hbox = new THREE.BoxHelper( this.footmesh, 0x000000 );
-			this.add( this.hbox );
-			//this.bbox = new THREE.Box3().setFromObject( object );
-			//console.log( this.bbox.min, this.bbox.max, this.bbox.getSize(new THREE.Vector3()) );
-			//this.box.position.set ( this.bbox.min.x , this.bbox.min.y , this.bbox.min.z );
+		this.loader.load( path,  ( object ) => {
+			console.log(object);
 			
-   		})
+  			var loadedmesh = object;
+  			var geometry = loadedmesh.children[0].geometry
+  			loadedmesh.castShadow = true; 
+			loadedmesh.receiveShadow = true;
+  			//this.add(loadedmesh);
+  			this.footmesh.add(loadedmesh);
+  			//this.getLimitsOf(geometry, loadedmesh);
+  			var gArray = geometry.attributes.position.array;
+     		this.pointCloud = new PointCloud(gArray.length, gArray, loadedmesh);
+			this.add(this.pointCloud);
+			this.pointCloud.init();
+
+			//for ( var i = 0; i < geometry.faces.length(); i ++ ) {
+    		//	var face  = geometry.faces[ i ];
+    		//	//var colString = "rgb(" + Math.floor((face.normal.x+1)*128) + ", " + Math.floor((face.normal.y+1)*128) + ", " + Math.floor((face.normal.z+1)*128) + ")";
+    		//	var colString = "rgb(0, " + Math.floor((face.normal.y+1)*128) + ", " + Math.floor((face.normal.z+1)*128) + ")";
+    		//	//var colString = "rgb(" + Math.floor((face.normal.x+1)*128) + ", 0, 0)";
+    		//	//var colString = "rgb(0, 0, " + Math.floor((face.normal.z+1)*128) + ")";
+    		//	//var colString = "rgb(0, " + Math.floor((face.normal.y+1)*128) + ", 0)";
+    		//	console.log(colString)
+    		//	face.color = new THREE.Color(colString);
+			//}
+
+  		});
+			//this.loader.load( "models/" + this.modelPath + "/left.obj",  ( object ) => {
+     		//this.footmesh = object;
+     		//this.add(object);
 	}
 
 	update(){
-		if(this.footmesh){
-			//this.footmesh.rotation.z += 0.01;
-			if(this.box.scale.y>0.1){
-				this.box.position.y -= 0.02;
-				this.box.scale.y -= 0.002;
+
+		/*
+		if(this.footmeshcontainer){
+			this.footmeshcontainer.rotation.y += this.step;
+			if(this.footmeshcontainer.rotation.y>this.limit || this.footmeshcontainer.rotation.y<this.minimum){
+				if(this.associatedRotation+this.step<this.footmeshcontainer.rotation.y){
+					this.footmeshcontainer.rotation.y = this.associatedRotation+this.step;
+				}
+				
+				this.limit = this.associatedRotation+this.step;
+				this.minimum = this.associatedRotation-this.step;
+				this.step *= -0.95;
 			}
-			this.checkOrientation();
+			//console.log("ROTATION", this.footmeshcontainer.rotation.y);
+			//console.log("MINUMUM WIDTH:", this.minimumWidth);
+			//console.log("FOOT LENGTH:", this.associatedLength);
+			//if(this.box.scale.y>0.1){
+			//	this.box.position.y -= 0.04;
+			//	this.box.scale.y -= 0.002;
+			//}
+			if(this.pointCloud){
+				var measurement = this.pointCloud.animate();
+				//this.setWireBox(measurement.x, measurement.y, 0, 2, measurement.z, measurement.w);
+				if(this.minimumWidth==null||((measurement.y-measurement.x)<this.minimumWidth)){
+					this.minimumWidth = (measurement.y-measurement.x);
+					this.associatedLength = (measurement.w-measurement.z);
+					this.associatedRotation = this.footmeshcontainer.rotation.y
+					//console.log(measurement);
+					//console.log("XXXROTATION", this.footmeshcontainer.rotation.y);
+					//console.log("XXXMINUMUM WIDTH:", this.minimumWidth);
+					//console.log("XXXFOOT LENGTH:", this.associatedLength);
+					this.footmeshcontainer.rotation.y -= 0.009;
+				}
+			}
 		}
-		
+
+		*/
 	}
-
-	checkOrientation(){
-
-	}
-
-
 }
 
 

@@ -1,0 +1,33 @@
+WEEKLY WRITE UP
+
+Page 2 - Pressure sensitive material.
+
+As an alternative to an underside camera.
+Can be bought and chopped up, made into a grid.
+There are ready made solutions, but many are designed for touch (as in fingers) not standing on.
+Is cheap, replaceable, and optional, can also be used to help calibrate foot position with the cameras.
+Volumental are using something similar for their foot outkine.
+
+Page 3 - Foot Measurment.
+
+Bounding boxes in three.js
+These are useful for getting the total dimensions of a 3D object.
+Unreliable, not accurate after rotation, and vary depending on model file format and structure.
+Building a class from scratch that takes the ponts in the model, converts them to global coordinates for metrics, but leaves them insode the loaded model for rotation.
+Aim 1. - to find the smallest rectangle area that can surround the foot base.
+Aim 2, - to find the smallest box volume that can surround the whole foot.
+
+
+Page 4 - Foot length
+
+The resulting box/rectangle is a great, normalised and consistent start to the measuring process.
+
+It gives us an immediate, and consistent length measurment.
+
+We're assuming that the foot is the right way up, with the base of the foot at the bottom, this should be a mandate for the scanning hardware to provide us. the rotation around the y axis is something that varies from one individual to another, so that's where our software orientation should start.
+
+Page 5 - Foot Width.
+
+We're now able to start finding the width measurement. We may be able to look at prominent points on the sides of the feet, where it makes contact with the bounding rectangle.
+
+Also, we can look at normal data on the edges for further indications of features.

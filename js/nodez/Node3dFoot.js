@@ -1,6 +1,6 @@
 class Node3dFoot extends Node3d {
 	constructor(x, y, z, text, isroot, scale=1, level=0, type = "none"){
-		super(x, y, z, "My Feet", isroot, scale, level, type);
+		super(x, y, z, "My Foot", isroot, scale, level, type);
 		this.footPath = text;
 		this.foot = null;
 		global.viewport.addEventListener("enterframe", () => { this.enterFrame() } );
@@ -16,8 +16,8 @@ class Node3dFoot extends Node3d {
     	console.log("GROWNNODEFOOT");
     	super.grown();
     	this.foot = new Foot(this.footPath);
-    	this.foot.castShadow = true; //default is false
-		this.foot.receiveShadow = true; //default
+    	this.foot.castShadow = true; 
+		this.foot.receiveShadow = true;
 		super.add(this.foot);
     }
 }
