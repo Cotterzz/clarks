@@ -14,6 +14,12 @@ class PointCloud extends THREE.Object3D{
         this.maxX=0;
         this.minZ=0;
         this.maxZ=0;
+
+        this.scanWidth = 33;
+        this.scanDepth = 33;
+        this.scanHeight = 12;
+
+
     }
 
     init(){
@@ -32,7 +38,7 @@ class PointCloud extends THREE.Object3D{
                 pY = this.pointArray[p+1]*mult,
                 pZ = this.pointArray[p+2]*mult;
             if(pZ>0){pZ=0}
-            var localParticle = new THREE.Vector3(pX, 0, pZ);
+            var localParticle = new THREE.Vector3(pX, pY, pZ);
             var cX = (this.pointArray[p+4]+1)*multc,
                 cY = (this.pointArray[p+5]+1)*multc,
                 cZ = (this.pointArray[p+6]+1)*multc;
