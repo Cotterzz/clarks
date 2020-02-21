@@ -81,7 +81,7 @@ class PointCloud extends THREE.Object3D{
             var pX = this.pointArray[p]*mult,
                 pY = this.pointArray[p+1]*mult,
                 pZ = this.pointArray[p+2]*mult;
-
+                
             if(pX>this.maxX){this.maxX=pX}else if (pX<this.minX){this.minX=pX};
             if(pY>this.maxY){this.maxY=pY}else if (pY<this.minY){this.minY=pY};
             if(pZ>this.maxZ){this.maxZ=pZ}else if (pZ<this.minZ){this.minZ=pZ};
