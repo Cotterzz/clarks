@@ -240,8 +240,8 @@ class NodeWeaVR {
 		var objects = this.raycaster.intersectObjects(this.labels);
 		this.cursor.touching = null;
 		if (objects.length>0) {
-        	this.cursor.touching = objects[0].object.node;
-        	this.viewport.plane.position.copy (this.cursor.touching.localToWorld(new THREE.Vector3()).clone());
+        	//this.cursor.touching = objects[0].object.node;
+        	//this.viewport.plane.position.copy (this.cursor.touching.localToWorld(new THREE.Vector3()).clone());
         	//console.log("LABELS:", this.labels, "OBJECTS:", objects, "touching:", this.cursor.touching);
     	}
     	this.viewport.plane.visible = true;
