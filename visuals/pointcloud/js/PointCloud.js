@@ -92,7 +92,7 @@ class PointCloud extends THREE.Object3D{
                 if(this.showRawData){
                     var localParticle = new THREE.Vector3(pX, pY, pZ);
                     this.geometry.vertices.push(localParticle);
-                    this.geometry.colors.push(new THREE.Color( 0, 1, 0 ));
+                    this.geometry.colors.push(new THREE.Color( .5, .5, .5 ));
                 }
 
                 var rx = Math.floor(pX);
@@ -113,7 +113,7 @@ class PointCloud extends THREE.Object3D{
                 if(this.showRawData){
                     var localParticle = new THREE.Vector3(pX, pY, pZ);
                     this.geometry.vertices.push(localParticle);
-                    this.geometry.colors.push(new THREE.Color( 0, 1, 0 ));
+                    this.geometry.colors.push(new THREE.Color( .5, .5, .5));
                 }
 
                 var rx = Math.floor(pX);
@@ -156,19 +156,19 @@ class PointCloud extends THREE.Object3D{
                 if(this.base2[bx][by]==true){
                     var localParticle = new THREE.Vector3(bx, by, 0);
                     this.geometry.vertices.push(localParticle);
-                    this.geometry.colors.push(new THREE.Color( 0, 0, 0 ));
+                    this.geometry.colors.push(new THREE.Color( 0, 0, 1, 0.1));
                 }
                 for (var bv = 0; bv < this.bevelAmount; bv+=1) {
                     if(this.bevel[bv][bx][by]==true){
                         var localParticle = new THREE.Vector3(bx, by, -1-bv);
                         this.geometry.vertices.push(localParticle);
-                        this.geometry.colors.push(new THREE.Color( 0, 0, 0 ));
+                        this.geometry.colors.push(new THREE.Color( 0, 0, 1, 0.1 ));
                     }
                 }
             }
         }
 
-        this.incLayer(this.pointBuffer[this.pointStart-1], this.bevel[this.bevelAmount-1], 0)
+        this.incLayer(this.pointBuffer[this.pointStart-1], this.bevel[this.bevelAmount-1], 0.5)
 
         for (var p = this.pointStart; p< this.pointHeight; p+=1) {
             for (var bx = 0; bx < this.baseSize; bx+=1) {
@@ -177,7 +177,7 @@ class PointCloud extends THREE.Object3D{
                         this.pointBuffer[p][bx][by]=true;
                         var localParticle = new THREE.Vector3(bx, by, -p);
                         this.geometry.vertices.push(localParticle);
-                        this.geometry.colors.push(new THREE.Color( 0, 0, 0, 0.1 ));
+                        this.geometry.colors.push(new THREE.Color( 0, 0, 1, 0.1 ));
                     } else{
                         this.pointBuffer[p][bx][by]=false;
                     }

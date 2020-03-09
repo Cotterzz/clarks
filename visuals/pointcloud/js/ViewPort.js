@@ -15,10 +15,10 @@ class ViewPort extends THREE.Object3D{
         if(global.depth){
             this.scene.background = new THREE.Color( 0x000000 );
         } else {
-            this.scene.background = new THREE.Color( 0xffffdd );
+            this.scene.background = new THREE.Color( 0xeeeeff );
         }
     	
-    	//this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
+    	//this.camera = new THREE.PerspectiveCamera(window.innerWidth/-20, window.innerWidth/20, window.innerHeight/20, window.innerHeight/-20, -1000, 1000);
         this.camera = new THREE.OrthographicCamera(window.innerWidth/-20, window.innerWidth/20, window.innerHeight/20, window.innerHeight/-20, -1000, 1000);
     	this.scene.add(this.camera);
     	this.camera.position.set(0, 0,100);

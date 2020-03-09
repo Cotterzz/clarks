@@ -14,7 +14,7 @@ class Foot extends THREE.Object3D{
      	
      	//this.footmesh.rotation.z = -global.ETA/3.2;
      	this.footmesh.rotation.x = global.ETA;
-     	this.footmesh.position.x =-16;
+     	this.footmesh.position.x =-18;
      	this.footmesh.position.z =-33;
      	this.footmesh.position.y =3;
      	this.minimumWidth = null;
