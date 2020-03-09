@@ -168,7 +168,7 @@ class PointCloud extends THREE.Object3D{
             }
         }
 
-        this.incLayer(this.pointBuffer[this.pointStart-1], this.bevel[this.bevelAmount-1], 1)
+        this.incLayer(this.pointBuffer[this.pointStart-1], this.bevel[this.bevelAmount-1], 0)
 
         for (var p = this.pointStart; p< this.pointHeight; p+=1) {
             for (var bx = 0; bx < this.baseSize; bx+=1) {
